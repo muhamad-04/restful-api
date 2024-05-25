@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const Course = require('../models/Course');
+const Course = require('../models/course');
+const authenticate = require('../middleware/authMiddleware');
 
-// Create a new course
-router.post('/', async (req, res) => {
+// Create a new course (protected route)
+router.post('/', authenticate, async (req, res) => {
     try {
         const course = await Course.create(req.body);
         res.status(201).json(course);
@@ -35,8 +36,8 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// Update a course by ID
-router.put('/:id', async (req, res) => {
+// Update a course by ID (protected route)
+router.put('/:id', authenticate, async (req, res) => {
     try {
         const course = await Course.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!course) {
@@ -48,8 +49,8 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-// Delete a course by ID
-router.delete('/:id', async (req, res) => {
+// Delete a course by ID (protected route)
+router.delete('/:id', authenticate, async (req, res) => {
     try {
         const course = await Course.findByIdAndDelete(req.params.id);
         if (!course) {
